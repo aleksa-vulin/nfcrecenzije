@@ -664,6 +664,7 @@
     .hero-stands-scene{gap: 16px;}
     .stand-card-wrap{width: 175px; height: 245px;}
     #heroStandWrap2, #heroStandWrap3 { width: 210px !important; }
+    .stand-base { width: 130px; }
   }
   @media (max-width:560px){
     .container{padding:0 20px;}
@@ -673,6 +674,17 @@
     .stand-card-wrap{width: 135px; height: 190px;}
     #heroStandWrap2, #heroStandWrap3 { width: 165px !important; }
     .order-form-container{padding:30px 20px;}
+    
+    /* Fiksevi za postolje i prikaz na mobilnim uređajima */
+    .stand-base { width: 105px; height: 14px; margin-top: -10px; }
+    .stand-base::before { height: 4px; }
+    .stand-foot { width: 50px; height: 6px; }
+    
+    /* Sakrivanje krajnjih stalaka na mobitelima da se izbjegne gužva */
+    .hero-stand-item:nth-child(1),
+    .hero-stand-item:nth-child(4) {
+      display: none;
+    }
   }
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
@@ -1036,9 +1048,9 @@
 
         <ul class="price-card-list">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> NFC čip + QR kod na poleđini</li>
-	<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Izbor svijetle ili tamne varijante</li>
+	      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Izbor svijetle ili tamne varijante</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Besplatno programiranje vašeg Google linka</li>
-	<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Veća kartica sa premium stalkom</li>
+	      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Veća kartica sa premium stalkom</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Maksimalna vidljivost na stolu</li>
         </ul>
 
@@ -1057,7 +1069,6 @@
         <p style="color: var(--ink-dim); font-size: 15px; margin-top: 6px;">Unesite podatke o vašem lokalu, a mi ćemo vas kontaktirati u najkraćem roku.</p>
       </div>
 
-      <!-- Zamijeni https://formspree.io/f/YOUR_FORM_ID svojim pravim Formspree linkom -->
       <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
         <div class="order-form-grid">
           
