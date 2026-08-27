@@ -157,14 +157,10 @@
     overflow: hidden;
   }
 
-  /* ---------- Testimonials Ticker Bar ---------- */
+  /* ---------- Testimonials Ticker Bar (Fixed Mobile Overflow) ---------- */
   .hero-testimonials-ticker {
-    width: 100vw;
+    width: 100%;
     position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
     overflow: hidden;
     margin-bottom: 30px;
     padding: 6px 0;
@@ -249,6 +245,7 @@
   .stage{
     position:relative; max-width:1240px; margin:0 auto; padding:50px 20px 0;
     perspective:1600px;
+    overflow: hidden;
   }
   .hero-stands-scene{
     position:relative; display:flex; justify-content:center; align-items:flex-end; gap:26px; z-index:2; flex-wrap:wrap;
@@ -596,10 +593,9 @@
     padding: 14px 16px;
     color: #fff;
     font-family: inherit;
-    font-size: 16px; /* Optimizovano na 16px da spriječi automatski zoom na iOS-u */
+    font-size: 15px;
     outline: none;
     transition: border-color .25s;
-    width: 100%;
   }
   .form-group input:focus, .form-group select:focus {
     border-color: var(--accent);
@@ -650,7 +646,7 @@
   .footer-col a:hover{color:#fff;}
   .footer-bottom{display:flex; justify-content:space-between; align-items:center; padding-top:24px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-faint); flex-wrap:wrap; gap:12px;}
 
-  /* ============ responsive optimizations (Mobile Only) ============ */
+  /* ============ responsive ============ */
   @media (max-width:1150px){
     .stand-card-wrap{width: 210px; height: 295px;}
     #heroStandWrap2, #heroStandWrap3 { width: 250px !important; }
@@ -673,17 +669,10 @@
     .container{padding:0 20px;}
     .footer-top{grid-template-columns:1fr;}
     .hero{padding-top:100px;}
-    .hero-stands-scene{gap: 10px;}
-    .stand-card-wrap{width: 140px; height: 195px;}
-    #heroStandWrap2, #heroStandWrap3 { width: 170px !important; }
+    .hero-stands-scene{gap: 12px;}
+    .stand-card-wrap{width: 135px; height: 190px;}
+    #heroStandWrap2, #heroStandWrap3 { width: 165px !important; }
     .order-form-container{padding:30px 20px;}
-    .hero-minicards { gap: 12px; }
-    .hero-minicard { min-width: 100%; }
-    section { padding: 65px 0; }
-  }
-  @media (max-width:380px){
-    .stand-card-wrap{width: 125px; height: 175px;}
-    #heroStandWrap2, #heroStandWrap3 { width: 150px !important; }
   }
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
@@ -1147,7 +1136,7 @@
         <div class="faq-a"><p>Svaka kartica ima QR kod na poleđini kao rezervnu opciju — gost jednostavno skenira kod fotoaparatom.</p></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaj(this)">Da li stalak dolazi uz karticu? <span class="plus"></span></button>
+        <button class="faq-q" onclick="toggleFaq(this)">Da li stalak dolazi uz karticu? <span class="plus"></span></button>
         <div class="faq-a"><p>Da, svaki komplet uključuje karticu i pripadajući stalak spreman za postavljanje na sto ili pult.</p></div>
       </div>
       <div class="faq-item">
