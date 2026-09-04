@@ -1133,6 +1133,10 @@
       </div>
 
       <form id="orderForm" action="https://formspree.io/f/mppzlrdl" method="POST">
+        <!-- Skriveno polje za naslov e-pošte i zaštitu od neželjene pošte (honeypot) -->
+        <input type="hidden" name="_subject" value="Nova narudžba sa NFCrecenzije.com!">
+        <input type="text" name="_gotcha" style="display:none !important" tabindex="-1" autocomplete="off">
+
         <div class="order-form-grid">
           
           <div class="form-group">
