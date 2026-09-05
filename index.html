@@ -461,6 +461,34 @@
   .feature-tile h4{font-size:18px; margin-bottom:8px; font-weight:600; color:#fff;}
   .feature-tile p{font-size:14px; color:var(--ink-dim); line-height:1.5;}
 
+  .features-next-btn {
+    position: absolute;
+    top: 42%;
+    right: -20px;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    cursor: pointer;
+    z-index: 10;
+    transition: transform .2s, background .2s;
+    border: 2px solid var(--bg);
+  }
+  .features-next-btn:hover {
+    transform: translateY(-50%) scale(1.08);
+    background: #f3d29b;
+  }
+  .features-next-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
   .features-hint {
     display: flex;
     align-items: center;
@@ -492,6 +520,13 @@
   }
 
   /* ============ PRICING & ORDERING SECTION ============ */
+  #cijena {
+    background: #171512;
+    transition: background-color 0.6s ease;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
   .pricing-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1034,6 +1069,10 @@
         </div>
       </div>
 
+      <button class="features-next-btn" onclick="scrollNextFeature()" aria-label="Slijedeća kartica">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+
       <div class="features-hint">
         <span>Prevucite u desno</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
@@ -1105,12 +1144,12 @@
         </div>
 
         <div class="price-card-amount-box">
-          <div class="price-card-amount">55.00 KM</div>
+          <div class="price-card-amount">59.99 KM</div>
           <div class="price-card-per">po kompletu · jednokratno</div>
         </div>
 
         <ul class="price-card-list">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> NFC čip + QR kod na poleđini</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> NFC čip + gratis QR Kod na poleđini</li>
 	      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Izbor svijetle ili tamne varijante</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Besplatno programiranje vašeg Google linka</li>
 	      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Veća kartica sa premium stalkom</li>
@@ -1133,10 +1172,6 @@
       </div>
 
       <form id="orderForm" action="https://formspree.io/f/mppzlrdl" method="POST">
-        <!-- Skriveno polje za naslov e-pošte i zaštitu od neželjene pošte (honeypot) -->
-        <input type="hidden" name="_subject" value="Nova narudžba sa NFCrecenzije.com!">
-        <input type="text" name="_gotcha" style="display:none !important" tabindex="-1" autocomplete="off">
-
         <div class="order-form-grid">
           
           <div class="form-group">
@@ -1327,7 +1362,7 @@
         requestAnimationFrame(update);
       } else {
         locEl.textContent = '100+';
-        timeEl.textContent = '3.0s';
+        timeEl.textContent = '3s';
       }
     }
 
@@ -1376,6 +1411,18 @@
     });
   }
   window.scrollToFeature = scrollToFeature;
+
+  function scrollNextFeature() {
+    if (!featuresScroll) return;
+    const cardWidth = featuresScroll.offsetWidth;
+    const maxScrollLeft = featuresScroll.scrollWidth - featuresScroll.clientWidth;
+    if (featuresScroll.scrollLeft + cardWidth >= maxScrollLeft - 10) {
+      featuresScroll.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      featuresScroll.scrollBy({ left: cardWidth, behavior: 'smooth' });
+    }
+  }
+  window.scrollNextFeature = scrollNextFeature;
 
   // ---------- tilt-follow-cursor for hero stand cards ----------
   function attachTilt(el, opts = {}){
