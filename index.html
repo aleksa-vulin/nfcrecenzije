@@ -1514,8 +1514,8 @@
 
 
 <script>
-  // ---------- view switching helper ----------
-  function switchView(viewName, productTitle = '') {
+  // ---------- view switching helper with HTML5 History API (pushState) ----------
+  function switchView(viewName, productTitle = '', pushHistory = true) {
     const selectorView = document.getElementById('view-selector');
     const reviewsView = document.getElementById('view-reviews');
     const testView = document.getElementById('view-test');
@@ -1527,17 +1527,43 @@
     if (viewName === 'selector') {
       selectorView.style.display = 'flex';
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (pushHistory) {
+        history.pushState({ view: 'selector' }, '', window.location.pathname);
+      }
     } else if (viewName === 'reviews') {
       reviewsView.style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (pushHistory) {
+        history.pushState({ view: 'reviews' }, '', '#reviews');
+      }
     } else if (viewName === 'test') {
       testView.style.display = 'block';
       const titleEl = document.getElementById('testProductTitle');
       if (titleEl) titleEl.textContent = 'Dobrodošli na ' + productTitle;
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (pushHistory) {
+        const slug = productTitle ? productTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'proizvod';
+        history.pushState({ view: 'test', productTitle: productTitle }, '', '#' + slug);
+      }
     }
   }
   window.switchView = switchView;
+
+  // Handle browser back/forward navigation using popstate[cite: 11]
+  window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.view) {
+      switchView(event.state.view, event.state.productTitle || '', false);
+    } else {
+      switchView('selector', '', false);
+    }
+  });
+
+  // Ensure initial page load has a state recorded
+  window.addEventListener('load', () => {
+    if (!history.state) {
+      history.replaceState({ view: 'selector' }, '', window.location.pathname);
+    }
+  });
 
   // ---------- noise canvas animation ----------
   const noiseCanvas = document.getElementById('noiseCanvas');
