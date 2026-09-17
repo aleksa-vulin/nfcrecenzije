@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>NFC-recenzije — Pretvorite svaki stol u petu zvjezdicu</title>
+<title>NFC-recenzije — Oduševi goste modernim pristupom u svom lokalu.</title>
 <meta name="description" content="Kartica koja otvara vašu Google recenziju ili digitalni meni čim je gost dotakne telefonom. Bez aplikacije, bez čekanja.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1640,14 +1640,6 @@
               <input type="text" id="kontakt_meni" name="kontakt" required placeholder="npr. +387 65 123 456">
             </div>
             <div class="form-group">
-              <label for="dizajnVerzijaMeni">Izabrani dizajn</label>
-              <select id="dizajnVerzijaMeni" name="dizajn_verzija" required>
-                <option value="" disabled selected>Izaberite dizajn menija</option>
-                <option value="Svijetla verzija">Svijetla verzija</option>
-                <option value="Tamna verzija">Tamna verzija</option>
-              </select>
-            </div>
-            <div class="form-group">
               <label for="tipVerzijaMeni">Verzija menija</label>
               <select id="tipVerzijaMeni" name="tip_verzija" required>
                 <option value="" disabled selected>Izaberite verziju</option>
@@ -2020,14 +2012,6 @@
               <input type="text" id="kontakt_wifi" name="kontakt" required placeholder="npr. +387 65 123 456">
             </div>
             <div class="form-group">
-              <label for="dizajnVerzijaWifi">Izabrani dizajn</label>
-              <select id="dizajnVerzijaWifi" name="dizajn_verzija" required>
-                <option value="" disabled selected>Izaberite dizajn</option>
-                <option value="Svijetla verzija">Svijetla verzija</option>
-                <option value="Tamna verzija">Tamna verzija</option>
-              </select>
-            </div>
-            <div class="form-group">
               <label for="tipVerzijaWifi">Verzija kartice / stalka</label>
               <select id="tipVerzijaWifi" name="tip_verzija" required>
                 <option value="" disabled selected>Izaberite verziju</option>
@@ -2394,14 +2378,6 @@
               <input type="text" id="kontakt_aio" name="kontakt" required placeholder="npr. +387 65 123 456">
             </div>
 
-            <div class="form-group">
-              <label for="dizajnVerzijaAio">Izabrani dizajn</label>
-              <select id="dizajnVerzijaAio" name="dizajn_verzija" required>
-                <option value="" disabled selected>Izaberite dizajn</option>
-                <option value="Svijetla verzija">Svijetla verzija</option>
-                <option value="Tamna verzija">Tamna verzija</option>
-              </select>
-            </div>
 
             <div class="form-group">
               <label for="tipVerzijaAio">Verzija kartice / stalka</label>
@@ -2515,8 +2491,27 @@
 
 <!-- ================= JAVASCRIPT ================= -->
 <script>
-  // View Switcher Gateway
-  function switchView(viewName, selectedProduct) {
+  // ================= ROUTER (HTML5 History API + hash) =================
+  // Pocetna stranica = nfcrecenzije.com  |  kartice = nfcrecenzije.com/#recenzije, #meni, #wifi, #all-in-one
+  var VIEW_TO_HASH = {
+    'selector': '',
+    'reviews': '#recenzije',
+    'meni': '#meni',
+    'wifi': '#wifi',
+    'aio': '#all-in-one'
+  };
+  var HASH_TO_VIEW = {
+    '': 'selector',
+    '#': 'selector',
+    '#recenzije': 'reviews',
+    '#meni': 'meni',
+    '#wifi': 'wifi',
+    '#all-in-one': 'aio'
+  };
+  var currentView = null;
+
+  // Samo prikazuje view (bez diranja istorije)
+  function renderView(viewName) {
     const views = document.querySelectorAll('.app-view');
     views.forEach(v => v.style.display = 'none');
 
@@ -2532,10 +2527,69 @@
       document.getElementById('view-aio').style.display = 'block';
     } else {
       document.getElementById('view-reviews').style.display = 'block';
+      viewName = 'reviews';
     }
 
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    currentView = viewName;
+    window.scrollTo({ top: 0, behavior: 'auto' });
     initReveal();
+  }
+
+  // View Switcher Gateway (klik na karticu / logo)
+  function switchView(viewName, selectedProduct) {
+    if(!Object.prototype.hasOwnProperty.call(VIEW_TO_HASH, viewName)) viewName = 'reviews';
+    var newUrl = window.location.pathname + window.location.search + VIEW_TO_HASH[viewName];
+    try {
+      if(window.history && window.history.pushState) {
+        window.history.pushState({ view: viewName }, '', newUrl);
+      } else {
+        window.location.hash = VIEW_TO_HASH[viewName];
+      }
+    } catch(e) {
+      window.location.hash = VIEW_TO_HASH[viewName];
+    }
+    renderView(viewName);
+    return false;
+  }
+
+  // Cita view iz trenutnog URL-a (null = obican anchor unutar stranice, npr. #cijena)
+  function viewFromLocation() {
+    var h = (window.location.hash || '').toLowerCase();
+    if(Object.prototype.hasOwnProperty.call(HASH_TO_VIEW, h)) return HASH_TO_VIEW[h];
+    return null;
+  }
+
+  // Ako neko otvori direktan link na sekciju (#cijenaMeni, #faqWifi...) - pogodi kojem viewu pripada
+  function viewFromSectionAnchor() {
+    var h = window.location.hash || '';
+    if(!h || h === '#') return null;
+    if(/Meni$/.test(h)) return 'meni';
+    if(/Wifi$/.test(h)) return 'wifi';
+    if(/Aio$/.test(h)) return 'aio';
+    if(/^#(cijena|faq|kako-radi)$/.test(h)) return 'reviews';
+    return null;
+  }
+
+  // Dugme "nazad" na telefonu / strelica u browseru
+  function handleLocationChange() {
+    var v = viewFromLocation();
+    if(v === null) return;          // obican anchor unutar iste stranice - ne diramo view
+    if(v === currentView) return;   // vec smo tu
+    renderView(v);
+  }
+  window.addEventListener('popstate', handleLocationChange);
+  window.addEventListener('hashchange', handleLocationChange);
+
+  // Start
+  function initRouter() {
+    var v = viewFromLocation();
+    if(v === null) v = viewFromSectionAnchor() || 'selector';
+    renderView(v);
+    try {
+      if(window.history && window.history.replaceState) {
+        window.history.replaceState({ view: v }, '', window.location.pathname + window.location.search + (window.location.hash || ''));
+      }
+    } catch(e) {}
   }
 
   // Package Selectors
@@ -2726,16 +2780,16 @@
 
   // Trigger counters on load
   window.addEventListener('DOMContentLoaded', () => {
-    animateCounter('countLokala', 100+);
+    animateCounter('countLokala', 100, false, '+');
     animateCounter('countVrijeme', 5, true, 's');
 
-    animateCounter('countLokalaMeni', 50+);
+    animateCounter('countLokalaMeni', 50, false, '+');
     animateCounter('countVrijemeMeni', 3, true, 's');
 
-    animateCounter('countLokalaWifi', 100+);
+    animateCounter('countLokalaWifi', 100, false, '+');
     animateCounter('countVrijemeWifi', 3, true, 's');
 
-    animateCounter('countLokalaAio', 20+);
+    animateCounter('countLokalaAio', 20, false, '+');
     animateCounter('countVrijemeAio', 3, true, 's');
   });
 
@@ -2763,6 +2817,9 @@
     ctx.putImageData(idata, 0, 0);
   }
   generateNoise();
+
+  // Pokreni router (prikazi view prema URL-u)
+  initRouter();
 </script>
 </body>
 </html>
