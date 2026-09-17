@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>NFCrecenzije — Pretvorite svaki stol u petu zvjezdicu</title>
+<title>NFC-recenzije — Pretvorite svaki stol u petu zvjezdicu</title>
 <meta name="description" content="Kartica koja otvara vašu Google recenziju čim je gost dotakne telefonom. Bez aplikacije, bez čekanja.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -81,6 +81,22 @@
   }
   .eyebrow.on-dark{color:#f3d29b;}
 
+  /* ---------- animated gold title for card 4 ---------- */
+  @keyframes goldShimmer {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .animated-gold-title {
+    background: linear-gradient(90deg, #e6b15c, #f5d79c, #c5933a, #ffe5b4, #e6b15c);
+    background-size: 300% auto;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: goldShimmer 3.5s linear infinite;
+  }
+
   /* ---------- reveal ---------- */
   .reveal{opacity:0; transform:translateY(24px); transition:opacity .8s var(--ease), transform .8s var(--ease);}
   .reveal.in-view{opacity:1; transform:translateY(0);}
@@ -90,21 +106,15 @@
   header{
     position:fixed; top:0; left:0; right:0; z-index:100;
     padding:16px 0;
-    background:rgba(18,18,22,0);
-    border-bottom:1px solid transparent;
-    transition:background .35s var(--ease), border-color .35s var(--ease), padding .35s var(--ease);
-    width:100%;
-  }
-  header.scrolled{
     background:rgba(18,18,22,.95);
     backdrop-filter:blur(20px) saturate(1.6);
     -webkit-backdrop-filter:blur(20px) saturate(1.6);
     border-bottom:1px solid var(--line-soft);
-    padding:12px 0;
+    width:100%;
   }
   nav.container{display:flex; align-items:center; justify-content:space-between;}
   
-  .logo{display:inline-flex; align-items:center; font-size:16px; font-weight:700; letter-spacing:-0.02em; color:var(--accent); position:relative;}
+  .logo{display:inline-flex; align-items:center; font-size:16px; font-weight:700; letter-spacing:-0.02em; color:var(--accent); position:relative; cursor:pointer;}
   .logo-nfc { color: var(--accent); }
   .logo-recenzije { color: var(--white); }
   .logo-dot-wrap { position: relative; display: inline-block; color: var(--accent); margin-left: 1px; }
@@ -148,6 +158,80 @@
   .btn-link svg{width:15px; height:15px; transition:transform .25s;}
   .btn-link:hover svg{transform:translateX(3px);}
   .btn svg{width:15px; height:15px;}
+
+  /* ============ PRODUCT SELECTION GATEWAY ============ */
+  #view-selector {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 0 60px;
+    background: var(--bg);
+    position: relative;
+    z-index: 3;
+  }
+  .product-sel-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+  }
+  .product-sel-card {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 24px 24px 20px;
+    cursor: pointer;
+    transition: all .35s var(--ease);
+    position: relative;
+    overflow: visible;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+  .product-sel-card.featured-sel-card {
+    border-color: rgba(230,177,92,0.4);
+    box-shadow: 0 15px 35px rgba(230,177,92,0.15);
+    background: linear-gradient(180deg, rgba(230,177,92,0.03) 0%, var(--bg-soft) 100%);
+  }
+  .product-sel-card.featured-sel-card:hover {
+    border-color: rgba(230,177,92,0.7);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 45px rgba(230,177,92,0.3);
+  }
+  .product-sel-card:hover {
+    border-color: rgba(230,177,92,0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 15px 40px rgba(230,177,92,0.1);
+  }
+  .product-sel-card h3 { font-size: 19px; color: #fff; margin-bottom: 6px; }
+  .product-sel-card p { color: var(--ink-dim); font-size: 14px; line-height: 1.45; margin-bottom: 16px; }
+  
+  .product-sel-img-box {
+    width: 100%;
+    height: 140px;
+    background: #141418;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .product-sel-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-sel-action {
+    color: var(--accent); font-weight: 600; font-size: 13.5px; display: inline-flex; align-items: center; gap: 6px;
+    transition: gap .2s;
+    margin-top: auto;
+  }
+  .product-sel-card:hover .product-sel-action { gap: 10px; }
 
   /* ============ HERO ============ */
   .hero{
@@ -564,6 +648,7 @@
     border-radius: 100px;
     letter-spacing: .04em;
     box-shadow: 0 4px 12px rgba(230,177,92,0.4);
+    z-index: 5;
   }
   
   .price-card-img-wrap {
@@ -747,6 +832,7 @@
     .pricing-grid{grid-template-columns:1fr;}
     .order-form-grid{grid-template-columns:1fr;}
     .form-group.full{grid-column: span 1;}
+    .product-sel-grid{grid-template-columns:1fr;}
     section{padding:70px 0;}
     .hero-stands-scene{gap: 12px;}
     .stand-card-wrap{width: 160px; height: 225px;}
@@ -773,543 +859,655 @@
 <!-- Noise Background Layer -->
 <canvas id="noiseCanvas"></canvas>
 
-<header id="siteHeader">
-  <nav class="container">
-    <a href="#" class="logo">
-      <span class="logo-nfc">NFC</span><span class="logo-recenzije">recenzije</span><span class="logo-dot-wrap">.<div class="logo-icon">
+
+<!-- ================= VIEW 1: PRODUCT SELECTION GATEWAY (LANDING) ================= -->
+<div id="view-selector" class="app-view">
+  <div class="container" style="text-align: center; max-width: 900px; display: flex; flex-direction: column; align-items: center;">
+    
+    <!-- Centered Logo -->
+    <a href="#" class="logo" onclick="switchView('selector'); return false;" style="margin-bottom: 22px; display: inline-flex; font-size: 26px;">
+      <span class="logo-nfc">NFC</span><span class="logo-recenzije">recenzije</span><span class="logo-dot-wrap">.<div class="logo-icon" style="width: 20px; height: 20px; top: -6px; right: -14px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <path d="M12 19h.01M12 15h.01M10 11.5a3 3 0 014 0M7 8.5a7 7 0 0110 0M4 5.5a11 11 0 0116 0"/>
         </svg>
       </div></span>
     </a>
-    <div class="nav-links">
-      <a href="#kako-radi">Kako radi</a>
-      <a href="#cijena">Cijena i narudžba</a>
-      <a href="#faq">Pitanja</a>
-    </div>
-    <a href="#cijena" class="nav-cta">Naruči</a>
-  </nav>
-</header>
 
-<!-- ================= HERO ================= -->
-<section class="hero">
-
-  <div class="container">
-    <span class="eyebrow">NAJBRŽI NAČIN DA POVEĆAŠ BROJ RECENZIJA</span>
-    <h1>Svaki stol,<br><span>pet zvjezdica.</span></h1>
-    <p class="lead">Kartica koja otvara vašu Google recenziju čim je gost dotakne telefonom. Bez aplikacije, bez čekanja.</p>
-    <div class="hero-actions">
-      <a href="#cijena" class="btn btn-dark" style="width:auto;">Naručite karticu</a>
-      <a href="#kako-radi" class="btn-link">Kako radi <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
-    </div>
-  </div>
-
-  <div class="stage">
-    <div class="hero-stands-scene reveal in-view">
+    <!-- Polite subtitle clearly visible on mobile -->
+    <h1 style="font-size: clamp(26px, 5.5vw, 40px); margin-bottom: 12px; letter-spacing: -0.03em;">Izaberite proizvod koji vas zanima</h1>
+    <p style="color: var(--ink-dim); font-size: 16px; max-width: 560px; margin: 0 auto 34px; line-height: 1.5;">Unaprijedite poslovanje vašeg ugostiteljskog objekta jednostavnim i modernim NFC rješenjima.</p>
+    
+    <!-- Four Cards Grid -->
+    <div class="product-sel-grid" style="width: 100%;">
       
-      <!-- Stalak 1 -->
-      <div class="hero-stand-item">
-        <div class="stand-card-wrap" id="heroStandWrap1">
-          <div class="stand-card">
-            <img src="stalak1.png" alt="NFCrecenzije stalak 1">
-          </div>
+      <!-- Card 1: ⭐Google Recenzije kartice -->
+      <div class="product-sel-card featured-sel-card" onclick="switchView('reviews')">
+        <div class="popular-bubble">Popularno 🔥</div>
+        <h3>⭐Google Recenzije kartice</h3>
+        <p>Kartica i stalak koji otvaraju vašu Google recenziju čim gost prisloni telefon. Bez čekanja i komplikacija.</p>
+        <div class="product-sel-img-box">
+          <img src="landing1.jpg" alt="Google reviews kartice">
         </div>
-        <div class="stand-base"></div>
-        <div class="stand-foot"></div>
+        <span class="product-sel-action">Izaberi Google reviews kartice →</span>
       </div>
 
-      <!-- Svijetli dizajn kartica (sredina) -->
-      <div class="hero-stand-item">
-        <div class="stand-card-wrap" id="heroStandWrap2">
-          <div class="stand-card">
-            <img src="dizajn1main.png" alt="NFCrecenzije svijetli dizajn u stalku">
-          </div>
+      <!-- Card 2: 🍴Meni NFC kartice -->
+      <div class="product-sel-card" onclick="switchView('test', 'Meni NFC kartica')">
+        <h3>🍴Meni NFC kartice</h3>
+        <p>Omogućite gostima brz i jednostavan pristup vašem digitalnom jelovniku i cjenovniku jednim dodirom. Uštedite na štampanju i ažurirajte ponudu u trenu.</p>
+        <div class="product-sel-img-box">
+          <img src="landing2.jpg" alt="Meni NFC kartica">
         </div>
-        <div class="stand-base"></div>
-        <div class="stand-foot"></div>
+        <span class="product-sel-action">Izaberi meni NFC karticu →</span>
       </div>
 
-      <!-- Tamni dizajn kartica (sredina) -->
-      <div class="hero-stand-item">
-        <div class="stand-card-wrap" id="heroStandWrap3">
-          <div class="stand-card">
-            <img src="dizajn2main.png" alt="NFCrecenzije tamni dizajn u stalku">
-          </div>
+      <!-- Card 3: ᯤWi-Fi + Društvene mreže kartica (Dodata landing3.jpg slika) -->
+      <div class="product-sel-card" onclick="switchView('test', 'Wi-Fi plus društvene mreže kartica')">
+        <h3>ᯤWi-Fi + Društvene mreže kartica</h3>
+        <p>Automatski spojite goste na vašu Wi-Fi mrežu ili im omogućite da odmah zaprate vaše profile na društvenim mrežama, sve u trenu.</p>
+        <div class="product-sel-img-box">
+          <img src="landing3.jpg" alt="Wi-Fi i Društvene mreže NFC kartica">
         </div>
-        <div class="stand-base"></div>
-        <div class="stand-foot"></div>
+        <span class="product-sel-action">Izaberi Wi-Fi & mreže →</span>
       </div>
 
-      <!-- Stalak 2 -->
-      <div class="hero-stand-item">
-        <div class="stand-card-wrap" id="heroStandWrap4">
-          <div class="stand-card">
-            <img src="stalak2.png" alt="NFCrecenzije stalak 2">
-          </div>
+      <!-- Card 4: 💎All-In-One kartica -->
+      <div class="product-sel-card" onclick="switchView('test', 'All-In-One kartica')">
+        <h3 class="animated-gold-title">💎All-In-One kartica</h3>
+        <p>Kombinujte recenzije, jelovnik, Wi-Fi i društvene mreže, ili drugo na jednoj pametnoj kartici. Sve što vaš ugostiteljski objekat treba na jednom mjestu.</p>
+        <div class="product-sel-img-box">
+          <img src="landing4.jpg" alt="All-In-One NFC kartica">
         </div>
-        <div class="stand-base"></div>
-        <div class="stand-foot"></div>
+        <span class="product-sel-action">Izaberi All-In-One karticu →</span>
       </div>
 
-    </div>
-    <p class="stage-caption">Dostupno u svijetloj i tamnoj izvedbi — uklapa se u svaki enterijer.</p>
-  </div>
-
-  <!-- 3 Mini Cards -->
-  <div class="container" style="margin-top: 45px;">
-    <div class="hero-minicards">
-      <div class="hero-minicard">
-        <div class="minicard-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </div>
-        <div class="minicard-content">
-          <div class="minicard-number" id="countLokala">0</div>
-          <div class="minicard-label">Broj lokala sa našom NFC karticom:</div>
-        </div>
-      </div>
-      <div class="hero-minicard">
-        <div class="minicard-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        </div>
-        <div class="minicard-content">
-          <div class="minicard-number" id="countVrijeme">0.0s</div>
-          <div class="minicard-label">Vrijeme do <span>⭐</span>5.0 recenzije:</div>
-        </div>
-      </div>
-      <div class="hero-minicard">
-        <div class="minicard-icon" style="color:var(--g-yellow); background:rgba(251,188,5,0.1); border-color:rgba(251,188,5,0.3);">
-          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </div>
-        <div class="minicard-content">
-          <div class="minicard-number">5.0</div>
-          <div class="minicard-label">99% gostiju ostavi maksimalnu ocjenu.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Testimonials Loop Ticker Bar -->
-  <div class="hero-testimonials-ticker">
-    <div class="ticker-track">
-      <div class="ticker-card">
-        <div class="ticker-stars">★★★★★</div>
-        <p class="ticker-quote">Gosti su prije odlazili bez ostavljanja recenzije. Sad je to dio računa — prislone telefon dok čekaju kusur.</p>
-        <div class="ticker-who"><b>Amela H.</b> · Vlasnica kafića, Banja Luka</div>
-      </div>
-      <div class="ticker-card">
-        <div class="ticker-stars">★★★★★</div>
-        <p class="ticker-quote">Tamni dizajn se savršeno uklapa u naš enterijer. Djeluje kao dio dekora, ne kao reklama.</p>
-        <div class="ticker-who"><b>Darko M.</b> · Menadžer restorana</div>
-      </div>
-      <div class="ticker-card">
-        <div class="ticker-stars">★★★★★</div>
-        <p class="ticker-quote">Broj recenzija se udvostručio u prvom mjesecu. Najjeftinija investicija koju smo napravili ove godine.</p>
-        <div class="ticker-who"><b>Lejla S.</b> · Vlasnica frizerskog salona</div>
-      </div>
-      <div class="ticker-card">
-        <div class="ticker-stars">★★★★★</div>
-        <p class="ticker-quote">Konobari obožavaju karticu, a gosti je stalno komentarišu. Ocjene na Google-u su skočile nevjerovatno brzo.</p>
-        <div class="ticker-who"><b>Stefan B.</b> · Vlasnik pub-a</div>
-      </div>
-      <div class="ticker-card">
-        <div class="ticker-stars">★★★★★</div>
-        <p class="ticker-quote">Doslovno svako drugo jutro imamo 3-4 nove recenzije. Ljudi vole kad je jednostavno i bez komplikacija.</p>
-        <div class="ticker-who"><b>Sanja K.</b> · Vlasnica poslastičarnice</div>
-      </div>
-      <div class="ticker-card">
-        <div class="ticker-stars">★★★★★</div>
-        <p class="ticker-quote">Najbolja stvar ikad. Nema instaliranja aplikacija, samo prisloniš telefon na sto i to je to.</p>
-        <div class="ticker-who"><b>Bojan P.</b> · Menadžer ćevabdžinice</div>
-      </div>
-
-      <!-- Duplirani set za besprijekoran beskonačni loop -->
-      <div class="ticker-card">
-        <div class="ticker-stars">★★★★★</div>
-        <p class="ticker-quote">Gosti su prije odlazili bez ostavljanja recenzije. Sad je to dio računa — prislone telefon dok čekaju kusur.</p>
-        <div class="ticker-who"><b>Amela H.</b> · Vlasnica kafića, Banja Luka</div>
-      </div>
-      <div class="ticker-card">
-        <div class="ticker-stars">★★★★★</div>
-        <p class="ticker-quote">Tamni dizajn se savršeno uklapa u naš enterijer. Djeluje kao dio dekora, ne kao reklama.</p>
-        <div class="ticker-who"><b>Darko M.</b> · Menadžer restorana</div>
-      </div>
-      <div class="ticker-card">
-        <div class="ticker-stars">★★★★★</div>
-        <p class="ticker-quote">Broj recenzija se udvostručio u prvom mjesecu. Najjeftinija investicija koju smo napravili ove godine.</p>
-        <div class="ticker-who"><b>Lejla S.</b> · Vlasnica frizerskog salona</div>
-      </div>
-      <div class="ticker-card">
-        <div class="ticker-stars">★★★★★</div>
-        <p class="ticker-quote">Konobari obožavaju karticu, a gosti je stalno komentarišu. Ocjene na Google-u su skočile nevjerovatno brzo.</p>
-        <div class="ticker-who"><b>Stefan B.</b> · Vlasnik pub-a</div>
-      </div>
-      <div class="ticker-card">
-        <div class="ticker-stars">★★★★★</div>
-        <p class="ticker-quote">Doslovno svako drugo jutro imamo 3-4 nove recenzije. Ljudi vole kad je jednostavno i bez komplikacija.</p>
-        <div class="ticker-who"><b>Sanja K.</b> · Vlasnica poslastičarnice</div>
-      </div>
-      <div class="ticker-card">
-        <div class="ticker-stars">★★★★★</div>
-        <p class="ticker-quote">Najbolja stvar ikad. Nema instaliranja aplikacija, samo prisloniš telefon na sto i to je to.</p>
-        <div class="ticker-who"><b>Bojan P.</b> · Menadžer ćevabdžinice</div>
-      </div>
-    </div>
-  </div>
-
-</section>
-
-<!-- ================= HOW IT WORKS ================= -->
-<section id="kako-radi">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">Kako radi</span>
-      <h2>Tri koraka. Manje od pet sekundi.</h2>
-    </div>
-    <div class="steps-grid reveal-stagger">
-
-      <div class="step-card stagger-child reveal" style="--i:0">
-        <div class="step-visual-box">
-          <div class="step-1-visual">
-            <div class="step-phone-icon">
-              <div class="step-phone-speaker"></div>
-              <div class="step-phone-screen"></div>
-              <div class="step-phone-home"></div>
-            </div>
-            <div class="step-nfc-waves">))))</div>
-            <div class="step-card-mini">
-              <img src="dizajn1main.png" alt="NFCrecenzije kartica - Korak 1">
-            </div>
-          </div>
-        </div>
-        <div class="step-tag">KORAK 1</div>
-        <h3>Prisloni telefon</h3>
-        <p>Gost približi telefon stalku na stolu — NFC čip automatski prepoznaje dodir.</p>
-      </div>
-
-      <div class="step-card stagger-child reveal" style="--i:1">
-        <div class="step-visual-box">
-          <div class="review-ui-box">
-            <div class="review-ui-header">
-              <div class="review-google-dot"></div>
-              <div class="review-ui-title">Google Recenzija</div>
-            </div>
-            <div class="review-ui-stars">★★★★★</div>
-            <div class="review-ui-line"></div>
-            <div class="review-ui-line short"></div>
-          </div>
-        </div>
-        <div class="step-tag">KORAK 2</div>
-        <h3>Stranica se otvara</h3>
-        <p>Telefon odmah prikazuje vašu Google Business stranicu, spremnu za ocjenu.</p>
-      </div>
-
-      <div class="step-card stagger-child reveal" style="--i:2">
-        <div class="step-visual-box">
-          <div class="success-badge-wrap">
-            <div class="success-stars">★★★★★</div>
-            <div class="success-check-circle">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>
-            </div>
-          </div>
-        </div>
-        <div class="step-tag">KORAK 3</div>
-        <h3>Recenzija je objavljena</h3>
-        <p>Gost izabere ocjenu i potvrdi — cijeli proces traje par sekundi.</p>
-      </div>
-
-    </div>
-
-    <!-- Dugme ispod Kako radi sekcije -->
-    <div style="text-align: center; margin-top: 40px;" class="reveal">
-      <a href="#cijena" class="btn btn-dark" style="width: auto;">Naručite karticu</a>
-    </div>
-  </div>
-</section>
-
-<!-- ================= FEATURES (ZAŠTO BAŠ MI?) ================= -->
-<section class="section-soft">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">ZAŠTO BAŠ MI?</span>
-      <h2>Napravljena da je gost stvarno koristi.</h2>
-    </div>
-
-    <!-- Features Carousel -->
-    <div class="features-carousel-wrap reveal">
-      <div class="features-scroll-container" id="featuresScroll">
-        <div class="feature-tile">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 018 0v2"/></svg></div>
-          <h4>Bez pretplate</h4>
-          <p>Jednokratna kupovina. Kartica i stalak su vaši, zauvijek, bez mjesečnih naknada.</p>
-        </div>
-        <div class="feature-tile">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></div>
-          <h4>Radi sa svakim telefonom</h4>
-          <p>NFC pokriva iPhone i Android bez podešavanja i aplikacija. Svaki telefon ga ima fabrički.</p>
-        </div>
-        <div class="feature-tile">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg></div>
-          <h4>Otporna na habanje</h4>
-          <p>Kartica debljine bankovne kartice, otporna na tekućinu i svakodnevno rukovanje.</p>
-        </div>
-        <div class="feature-tile">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 21v-7M4 10V3M12 21v-11M12 6V3M20 21v-5M20 12V3"/><path d="M1 14h6M9 6h6M17 12h6"/></svg></div>
-          <h4>Direktan link na Google</h4>
-          <p>Vodi gosta tačno na vašu Google Business stranicu, bez posrednih koraka.</p>
-        </div>
-        <div class="feature-tile">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
-          <h4>Vaš dizajn ili naš</h4>
-          <p>Birate svijetli ili tamni dizajn. Sa mogućnošću stavljanja logo-a vašeg biznisa na karticu.</p>
-        </div>
-        <div class="feature-tile">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-          <h4>Besplatna podrška</h4>
-          <p>U slučaju problema sa karticom nudimo besplatnu zamjenu i podešavanje kartice!</p>
-        </div>
-      </div>
-
-      <button class="features-next-btn" onclick="scrollNextFeature()" aria-label="Slijedeća kartica">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-
-      <div class="features-hint">
-        <span>Prevucite u desno</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-      </div>
-
-      <div class="features-pagination" id="featuresPagination">
-        <div class="feature-dot active" onclick="scrollToFeature(0)"></div>
-        <div class="feature-dot" onclick="scrollToFeature(1)"></div>
-        <div class="feature-dot" onclick="scrollToFeature(2)"></div>
-        <div class="feature-dot" onclick="scrollToFeature(3)"></div>
-        <div class="feature-dot" onclick="scrollToFeature(4)"></div>
-        <div class="feature-dot" onclick="scrollToFeature(5)"></div>
-      </div>
-    </div>
-
-    <!-- Dugme ispod Zašto baš mi sekcije -->
-    <div style="text-align: center; margin-top: 40px;" class="reveal">
-      <a href="#cijena" class="btn btn-dark" style="width: auto;">Naručite karticu</a>
-    </div>
-  </div>
-</section>
-
-<!-- ================= PRICING & ORDERING SECTION ================= -->
-<section id="cijena">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">Cijene i Narudžba</span>
-      <h2>Odaberite verziju za vaš lokal.</h2>
-      <p>Jednokratna kupovina, bez pretplate. U cijenu je uključeno programiranje čipa na vaš Google link.</p>
-    </div>
-
-    <!-- Pricing Grid with 2 Cards -->
-    <div class="pricing-grid reveal">
-      
-      <!-- Standardna Verzija -->
-      <div class="price-card-item featured">
-        <div class="popular-bubble">POPULARNO 🔥</div>
-        <h3 class="price-card-title">Standardna verzija</h3>
-        <p class="price-card-desc">Klasična NFC kartica u modernom izdanju, savršena za postavljanje na stolove ili šank.</p>
-        
-        <div class="price-card-img-wrap">
-          <img src="liveslika1.png" alt="Standardna NFC recenzija kartica">
-        </div>
-
-        <div class="price-card-amount-box">
-          <div class="price-card-amount">39.99 KM</div>
-          <div class="price-card-per">po kompletu · jednokratno</div>
-        </div>
-
-        <ul class="price-card-list">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> NFC čip + gratis QR Kod na poleđini</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Izbor svijetle ili tamne varijante</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Besplatno programiranje vašeg Google linka</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Mini kartica sa mini držačem</li>
-        </ul>
-
-        <div class="bulk-discount-note">🎁 Popust na narudžbe od 3+ kartice!</div>
-
-        <button class="btn btn-dark" onclick="selectPackage('Standardna verzija')">Izaberi standardnu verziju</button>
-      </div>
-
-      <!-- Stalak Verzija -->
-      <div class="price-card-item">
-        <h3 class="price-card-title">Stalak verzija</h3>
-        <p class="price-card-desc">Luksuzni viši stalak sa ugrađenom NFC karticom, uočljiviji i privlačniji za goste u restoranu.</p>
-        
-        <div class="price-card-img-wrap">
-          <img src="liveslika2.png" alt="Stalak verzija NFC kartice">
-        </div>
-
-        <div class="price-card-amount-box">
-          <div class="price-card-amount">59.99 KM</div>
-          <div class="price-card-per">po kompletu · jednokratno</div>
-        </div>
-
-        <ul class="price-card-list">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> NFC čip + gratis QR Kod na poleđini</li>
-	      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Izbor svijetle ili tamne varijante</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Besplatno programiranje vašeg Google linka</li>
-	      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Veća kartica sa premium stalkom</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Maksimalna vidljivost na stolu</li>
-        </ul>
-
-        <div class="bulk-discount-note">🎁 Popust na narudžbe od 3+ kartice!</div>
-
-        <button class="btn btn-light" onclick="selectPackage('Stalak verzija')">Izaberi stalak verziju</button>
-      </div>
-
-    </div>
-
-    <!-- Order Form Section -->
-    <div class="order-form-container reveal" id="formaZaNarudzbu">
-      <div style="text-align: center; margin-bottom: 10px;">
-        <span class="eyebrow">Popunite podatke</span>
-        <h3 style="font-size: 24px; color: #fff;">Naručite svoju NFC karticu / stalak</h3>
-        <p style="color: var(--ink-dim); font-size: 14.5px; margin-top: 6px;">Unesite podatke o vašem lokalu, a mi ćemo vas kontaktirati u najkraćem roku.</p>
-      </div>
-
-      <form id="orderForm" action="https://formspree.io/f/mppzlrdl" method="POST">
-        <div class="order-form-grid">
-          
-          <div class="form-group">
-            <label for="naziv_lokala">Naziv ugostiteljskog objekta</label>
-            <input type="text" id="naziv_lokala" name="naziv_lokala" required placeholder="npr. Caffe Bar Ime">
-          </div>
-
-          <div class="form-group">
-            <label for="kontakt">Kontakt telefon / email</label>
-            <input type="text" id="kontakt" name="kontakt" required placeholder="npr. +387 65 123 456">
-          </div>
-
-          <div class="form-group">
-            <label for="dizajnVerzija">Izabrani dizajn</label>
-            <select id="dizajnVerzija" name="dizajn_verzija" required>
-              <option value="" disabled selected>Izaberite dizajn kartice</option>
-              <option value="Svijetla verzija">Svijetla verzija</option>
-              <option value="Tamna verzija">Tamna verzija</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="tipVerzija">Verzija kartice</label>
-            <select id="tipVerzija" name="tip_verzija" required>
-              <option value="" disabled selected>Izaberite verziju kartice</option>
-              <option value="Standardna verzija">Standardna verzija</option>
-              <option value="Stalak verzija">Stalak verzija</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="kolicina">Količina</label>
-            <input type="number" id="kolicina" name="kolicina" min="1" value="1" required>
-            <span style="font-size: 12px; color: var(--accent); margin-top: 2px; font-weight: 500;">Nudimo popust na 3+ količinu.</span>
-          </div>
-
-          <div class="form-group">
-            <label for="logoStatus">Imate li svoj logo?</label>
-            <select id="logoStatus" name="logo_status" required>
-              <option value="Bez logoa">Bez logoa</option>
-              <option value="Da, poslaću kada me kontaktirate na Viber/Email">Da, poslaću kada me kontaktirate na Viber/Email</option>
-            </select>
-          </div>
-
-          <div class="form-group full" style="margin-top: 8px;">
-            <button type="submit" id="submitBtn" class="btn btn-dark" style="padding: 15px; font-size: 15px; width: 100%;">Pošalji narudžbu</button>
-            <p class="form-notice">Kada izvršite narudžbu, kontaktiraćemo vas na Viber/Email u roku od 0-48h.</p>
-          </div>
-
-        </div>
-      </form>
-    </div>
-
-  </div>
-</section>
-
-<!-- ================= FAQ ================= -->
-<section class="section-soft" id="faq">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">Česta pitanja</span>
-      <h2>Sve što trebate znati prije narudžbe.</h2>
-    </div>
-    <div class="faq-list reveal">
-      <div class="faq-item open">
-        <button class="faq-q" onclick="toggleFaq(this)">Da li gost mora imati posebnu aplikaciju? <span class="plus"></span></button>
-        <div class="faq-a"><p>Ne. NFC tehnologija radi kroz čitač ugrađen u svaki moderni iPhone i Android telefon — gost samo prisloni telefon stalku.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">Šta ako telefon gosta ne podržava NFC? <span class="plus"></span></button>
-        <div class="faq-a"><p>Svaka kartica ima QR kod na poleđini kao rezervnu opciju — gost jednostavno skenira kod fotoaparatom.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">Da li stalak dolazi uz karticu? <span class="plus"></span></button>
-        <div class="faq-a"><p>Da, svaki komplet uključuje karticu i pripadajući stalak spreman za postavljanje na sto ili pult.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">Koliko traje isporuka? <span class="plus"></span></button>
-        <div class="faq-a"><p>Standardna isporuka traje 3 do 5 radnih dana od potvrde narudžbe.</p></div>
-      </div>
-    </div>
-
-    <!-- Dugme ispod FAQ sekcije -->
-    <div style="text-align: center; margin-top: 40px;" class="reveal">
-      <a href="#cijena" class="btn btn-dark" style="width: auto;">Naručite karticu</a>
     </div>
   </div>
-</section>
+</div>
 
-<!-- ================= FINAL CTA ================= -->
-<section class="section-dark final-cta">
-  <div class="container">
-    <span class="eyebrow on-dark">Spremni ste?</span>
-    <h2>Vaša sledeća recenzija<br>je udaljena jedan dodir.</h2>
-    <p>Postavite našu karticu danas i pustite goste da rade ono što bi svakako htjeli — pohvale vas na Google-u.</p>
-    <div class="final-cta-btns">
-      <a href="#cijena" class="btn btn-dark" style="width:auto;">Naručite karticu</a>
-    </div>
-  </div>
-</section>
 
-<footer>
-  <div class="container">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a href="#" class="logo">
-          <span class="logo-nfc">NFC</span><span class="logo-recenzije">recenzije</span><span class="logo-dot-wrap">.<div class="logo-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M12 19h.01M12 15h.01M10 11.5a3 3 0 014 0M7 8.5a7 7 0 0110 0M4 5.5a11 11 0 0116 0"/>
-            </svg>
-          </div></span>
-        </a>
-        <p>NFC kartice sa stalkom koje pretvaraju zadovoljne goste u vidljive Google recenzije, jednim dodirom.</p>
-      </div>
-      <div class="footer-col">
-        <h5>Proizvod</h5>
+<!-- ================= VIEW 2: GOOGLE REVIEWS WEBSITE CONTENT ================= -->
+<div id="view-reviews" class="app-view" style="display: none;">
+
+  <!-- Header for Google Reviews page with logo taking back to selector -->
+  <header id="siteHeader">
+    <nav class="container">
+      <a href="#" class="logo" onclick="switchView('selector'); return false;">
+        <span class="logo-nfc">NFC</span><span class="logo-recenzije">recenzije</span><span class="logo-dot-wrap">.<div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 19h.01M12 15h.01M10 11.5a3 3 0 014 0M7 8.5a7 7 0 0110 0M4 5.5a11 11 0 0116 0"/>
+          </svg>
+        </div></span>
+      </a>
+      <div class="nav-links">
         <a href="#kako-radi">Kako radi</a>
-        <a href="#cijena">Cijene i narudžba</a>
+        <a href="#cijena">Cijena i narudžba</a>
+        <a href="#faq">Pitanja</a>
       </div>
-      <div class="footer-col">
-        <h5>Podrška</h5>
-        <a href="#faq">Česta pitanja</a>
-        <a href="mailto:kontakt@nfcrecenzije.com">Kontakt</a>
-      </div>
-      <div class="footer-col">
-        <h5>Kompanija</h5>
-        <a href="#">O nama</a>
-        <a href="#">Uslovi korištenja</a>
+      <a href="#cijena" class="nav-cta">Naruči</a>
+    </nav>
+  </header>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+
+    <div class="container">
+      <span class="eyebrow">NAJBRŽI NAČIN DA POVEĆAŠ BROJ RECENZIJA</span>
+      <h1>Svaki stol,<br><span>pet zvjezdica.</span></h1>
+      <p class="lead">Kartica koja otvara vašu Google recenziju čim je gost dotakne telefonom. Bez aplikacije, bez čekanja.</p>
+      <div class="hero-actions">
+        <a href="#cijena" class="btn btn-dark" style="width:auto;">Naručite karticu</a>
+        <a href="#kako-radi" class="btn-link">Kako radi <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span>© 2026 nfcrecenzije.com — Sva prava zadržana.</span>
-      <span>Napravljeno za ugostiteljstvo koje zaslužuje pet zvjezdica.</span>
+
+    <div class="stage">
+      <div class="hero-stands-scene reveal in-view">
+        
+        <!-- Stalak 1 -->
+        <div class="hero-stand-item">
+          <div class="stand-card-wrap" id="heroStandWrap1">
+            <div class="stand-card">
+              <img src="stalak1.png" alt="NFC-recenzije stalak 1">
+            </div>
+          </div>
+          <div class="stand-base"></div>
+          <div class="stand-foot"></div>
+        </div>
+
+        <!-- Svijetli dizajn kartica (sredina) -->
+        <div class="hero-stand-item">
+          <div class="stand-card-wrap" id="heroStandWrap2">
+            <div class="stand-card">
+              <img src="dizajn1main.png" alt="NFC-recenzije svijetli dizajn u stalku">
+            </div>
+          </div>
+          <div class="stand-base"></div>
+          <div class="stand-foot"></div>
+        </div>
+
+        <!-- Tamni dizajn kartica (sredina) -->
+        <div class="hero-stand-item">
+          <div class="stand-card-wrap" id="heroStandWrap3">
+            <div class="stand-card">
+              <img src="dizajn2main.png" alt="NFC-recenzije tamni dizajn u stalku">
+            </div>
+          </div>
+          <div class="stand-base"></div>
+          <div class="stand-foot"></div>
+        </div>
+
+        <!-- Stalak 2 -->
+        <div class="hero-stand-item">
+          <div class="stand-card-wrap" id="heroStandWrap4">
+            <div class="stand-card">
+              <img src="stalak2.png" alt="NFC-recenzije stalak 2">
+            </div>
+          </div>
+          <div class="stand-base"></div>
+          <div class="stand-foot"></div>
+        </div>
+
+      </div>
+      <p class="stage-caption">Dostupno u svijetloj i tamnoj izvedbi — uklapa se u svaki enterijer.</p>
+    </div>
+
+    <!-- 3 Mini Cards -->
+    <div class="container" style="margin-top: 45px;">
+      <div class="hero-minicards">
+        <div class="hero-minicard">
+          <div class="minicard-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div class="minicard-content">
+            <div class="minicard-number" id="countLokala">0</div>
+            <div class="minicard-label">Broj lokala sa našom NFC karticom:</div>
+          </div>
+        </div>
+        <div class="hero-minicard">
+          <div class="minicard-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="minicard-content">
+            <div class="minicard-number" id="countVrijeme">0.0s</div>
+            <div class="minicard-label">Vrijeme do <span>⭐</span>5.0 recenzije:</div>
+          </div>
+        </div>
+        <div class="hero-minicard">
+          <div class="minicard-icon" style="color:var(--g-yellow); background:rgba(251,188,5,0.1); border-color:rgba(251,188,5,0.3);">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="minicard-content">
+            <div class="minicard-number">5.0</div>
+            <div class="minicard-label">99% gostiju ostavi maksimalnu ocjenu.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Testimonials Loop Ticker Bar -->
+    <div class="hero-testimonials-ticker">
+      <div class="ticker-track">
+        <div class="ticker-card">
+          <div class="ticker-stars">★★★★★</div>
+          <p class="ticker-quote">Gosti su prije odlazili bez ostavljanja recenzije. Sad je to dio računa — prislone telefon dok čekaju kusur.</p>
+          <div class="ticker-who"><b>Amela H.</b> · Vlasnica kafića, Banja Luka</div>
+        </div>
+        <div class="ticker-card">
+          <div class="ticker-stars">★★★★★</div>
+          <p class="ticker-quote">Tamni dizajn se savršeno uklapa u naš enterijer. Djeluje kao dio dekora, ne kao reklama.</p>
+          <div class="ticker-who"><b>Darko M.</b> · Menadžer restorana</div>
+        </div>
+        <div class="ticker-card">
+          <div class="ticker-stars">★★★★★</div>
+          <p class="ticker-quote">Broj recenzija se udvostručio u prvom mjesecu. Najjeftinija investicija koju smo napravili ove godine.</p>
+          <div class="ticker-who"><b>Lejla S.</b> · Vlasnica frizerskog salona</div>
+        </div>
+        <div class="ticker-card">
+          <div class="ticker-stars">★★★★★</div>
+          <p class="ticker-quote">Konobari obožavaju karticu, a gosti je stalno komentarišu. Ocjene na Google-u su skočile nevjerovatno brzo.</p>
+          <div class="ticker-who"><b>Stefan B.</b> · Vlasnik pub-a</div>
+        </div>
+        <div class="ticker-card">
+          <div class="ticker-stars">★★★★★</div>
+          <p class="ticker-quote">Doslovno svako drugo jutro imamo 3-4 nove recenzije. Ljudi vole kad je jednostavno i bez komplikacija.</p>
+          <div class="ticker-who"><b>Sanja K.</b> · Vlasnica poslastičarnice</div>
+        </div>
+        <div class="ticker-card">
+          <div class="ticker-stars">★★★★★</div>
+          <p class="ticker-quote">Najbolja stvar ikad. Nema instaliranja aplikacija, samo prisloniš telefon na sto i to je to.</p>
+          <div class="ticker-who"><b>Bojan P.</b> · Menadžer ćevabdžinice</div>
+        </div>
+
+        <!-- Duplirani set za besprijekoran beskonačni loop -->
+        <div class="ticker-card">
+          <div class="ticker-stars">★★★★★</div>
+          <p class="ticker-quote">Gosti su prije odlazili bez ostavljanja recenzije. Sad je to dio računa — prislone telefon dok čekaju kusur.</p>
+          <div class="ticker-who"><b>Amela H.</b> · Vlasnica kafića, Banja Luka</div>
+        </div>
+        <div class="ticker-card">
+          <div class="ticker-stars">★★★★★</div>
+          <p class="ticker-quote">Tamni dizajn se savršeno uklapa u naš enterijer. Djeluje kao dio dekora, ne kao reklama.</p>
+          <div class="ticker-who"><b>Darko M.</b> · Menadžer restorana</div>
+        </div>
+        <div class="ticker-card">
+          <div class="ticker-stars">★★★★★</div>
+          <p class="ticker-quote">Broj recenzija se udvostručio u prvom mjesecu. Najjeftinija investicija koju smo napravili ove godine.</p>
+          <div class="ticker-who"><b>Lejla S.</b> · Vlasnica frizerskog salona</div>
+        </div>
+        <div class="ticker-card">
+          <div class="ticker-stars">★★★★★</div>
+          <p class="ticker-quote">Konobari obožavaju karticu, a gosti je stalno komentarišu. Ocjene na Google-u su skočile nevjerovatno brzo.</p>
+          <div class="ticker-who"><b>Stefan B.</b> · Vlasnik pub-a</div>
+        </div>
+        <div class="ticker-card">
+          <div class="ticker-stars">★★★★★</div>
+          <p class="ticker-quote">Doslovno svako drugo jutro imamo 3-4 nove recenzije. Ljudi vole kad je jednostavno i bez komplikacija.</p>
+          <div class="ticker-who"><b>Sanja K.</b> · Vlasnica poslastičarnice</div>
+        </div>
+        <div class="ticker-card">
+          <div class="ticker-stars">★★★★★</div>
+          <p class="ticker-quote">Najbolja stvar ikad. Nema instaliranja aplikacija, samo prisloniš telefon na sto i to je to.</p>
+          <div class="ticker-who"><b>Bojan P.</b> · Menadžer ćevabdžinice</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <section id="kako-radi">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Kako radi</span>
+        <h2>Tri koraka. Manje od pet sekundi.</h2>
+      </div>
+      <div class="steps-grid reveal-stagger">
+
+        <div class="step-card stagger-child reveal" style="--i:0">
+          <div class="step-visual-box">
+            <div class="step-1-visual">
+              <div class="step-phone-icon">
+                <div class="step-phone-speaker"></div>
+                <div class="step-phone-screen"></div>
+                <div class="step-phone-home"></div>
+              </div>
+              <div class="step-nfc-waves">))))</div>
+              <div class="step-card-mini">
+                <img src="dizajn1main.png" alt="NFC-recenzije kartica - Korak 1">
+              </div>
+            </div>
+          </div>
+          <div class="step-tag">KORAK 1</div>
+          <h3>Prisloni telefon</h3>
+          <p>Gost približi telefon stalku na stolu — NFC čip automatski prepoznaje dodir.</p>
+        </div>
+
+        <div class="step-card stagger-child reveal" style="--i:1">
+          <div class="step-visual-box">
+            <div class="review-ui-box">
+              <div class="review-ui-header">
+                <div class="review-google-dot"></div>
+                <div class="review-ui-title">Google Recenzija</div>
+              </div>
+              <div class="review-ui-stars">★★★★★</div>
+              <div class="review-ui-line"></div>
+              <div class="review-ui-line short"></div>
+            </div>
+          </div>
+          <div class="step-tag">KORAK 2</div>
+          <h3>Stranica se otvara</h3>
+          <p>Telefon odmah prikazuje vašu Google Business stranicu, spremnu za ocjenu.</p>
+        </div>
+
+        <div class="step-card stagger-child reveal" style="--i:2">
+          <div class="step-visual-box">
+            <div class="success-badge-wrap">
+              <div class="success-stars">★★★★★</div>
+              <div class="success-check-circle">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="step-tag">KORAK 3</div>
+          <h3>Recenzija je objavljena</h3>
+          <p>Gost izabere ocjenu i potvrdi — cijeli proces traje par sekundi.</p>
+        </div>
+
+      </div>
+
+      <!-- Dugme ispod Kako radi sekcije -->
+      <div style="text-align: center; margin-top: 40px;" class="reveal">
+        <a href="#cijena" class="btn btn-dark" style="width: auto;">Naručite karticu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FEATURES (ZAŠTO BAŠ MI?) ================= -->
+  <section class="section-soft">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">ZAŠTO BAŠ MI?</span>
+        <h2>Napravljena da je gost stvarno koristi.</h2>
+      </div>
+
+      <!-- Features Carousel -->
+      <div class="features-carousel-wrap reveal">
+        <div class="features-scroll-container" id="featuresScroll">
+          <div class="feature-tile">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 018 0v2"/></svg></div>
+            <h4>Bez pretplate</h4>
+            <p>Jednokratna kupovina. Kartica i stalak su vaši, zauvijek, bez mjesečnih naknada.</p>
+          </div>
+          <div class="feature-tile">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></div>
+            <h4>Radi sa svakim telefonom</h4>
+            <p>NFC pokriva iPhone i Android bez podešavanja i aplikacija. Svaki telefon ga ima fabrički.</p>
+          </div>
+          <div class="feature-tile">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg></div>
+            <h4>Otporna na habanje</h4>
+            <p>Kartica debljine bankovne kartice, otporna na tekućinu i svakodnevno rukovanje.</p>
+          </div>
+          <div class="feature-tile">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 21v-7M4 10V3M12 21v-11M12 6V3M20 21v-5M20 12V3"/><path d="M1 14h6M9 6h6M17 12h6"/></svg></div>
+            <h4>Direktan link na Google</h4>
+            <p>Vodi gosta tačno na vašu Google Business stranicu, bez posrednih koraka.</p>
+          </div>
+          <div class="feature-tile">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+            <h4>Vaš dizajn ili naš</h4>
+            <p>Birate svijetli ili tamni dizajn. Sa mogućnošću stavljanja logo-a vašeg biznisa na karticu.</p>
+          </div>
+          <div class="feature-tile">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <h4>Besplatna podrška</h4>
+            <p>U slučaju problema sa karticom nudimo besplatnu zamjenu i podešavanje kartice!</p>
+          </div>
+        </div>
+
+        <button class="features-next-btn" onclick="scrollNextFeature()" aria-label="Slijedeća kartica">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+
+        <div class="features-hint">
+          <span>Prevucite u desno</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </div>
+
+        <div class="features-pagination" id="featuresPagination">
+          <div class="feature-dot active" onclick="scrollToFeature(0)"></div>
+          <div class="feature-dot" onclick="scrollToFeature(1)"></div>
+          <div class="feature-dot" onclick="scrollToFeature(2)"></div>
+          <div class="feature-dot" onclick="scrollToFeature(3)"></div>
+          <div class="feature-dot" onclick="scrollToFeature(4)"></div>
+          <div class="feature-dot" onclick="scrollToFeature(5)"></div>
+        </div>
+      </div>
+
+      <!-- Dugme ispod Zašto baš mi sekcije -->
+      <div style="text-align: center; margin-top: 40px;" class="reveal">
+        <a href="#cijena" class="btn btn-dark" style="width: auto;">Naručite karticu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PRICING & ORDERING SECTION ================= -->
+  <section id="cijena">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Cijene i Narudžba</span>
+        <h2>Odaberite verziju za vaš lokal.</h2>
+        <p>Jednokratna kupovina, bez pretplate. U cijenu je uključeno programiranje čipa na vaš Google link.</p>
+      </div>
+
+      <!-- Pricing Grid with 2 Cards -->
+      <div class="pricing-grid reveal">
+        
+        <!-- Standardna Verzija -->
+        <div class="price-card-item featured">
+          <div class="popular-bubble">POPULARNO 🔥</div>
+          <h3 class="price-card-title">Standardna verzija</h3>
+          <p class="price-card-desc">Klasična NFC kartica u modernom izdanju, savršena za postavljanje na stolove ili šank.</p>
+          
+          <div class="price-card-img-wrap">
+            <img src="liveslika1.png" alt="Standardna NFC recenzija kartica">
+          </div>
+
+          <div class="price-card-amount-box">
+            <div class="price-card-amount">39.99 KM</div>
+            <div class="price-card-per">po kompletu · jednokratno</div>
+          </div>
+
+          <ul class="price-card-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> NFC čip + gratis QR Kod na poleđini</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Izbor svijetle ili tamne varijante</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Besplatno programiranje vašeg Google linka</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Mini kartica sa mini držačem</li>
+          </ul>
+
+          <div class="bulk-discount-note">🎁 Popust na narudžbe od 3+ kartice!</div>
+
+          <button class="btn btn-dark" onclick="selectPackage('Standardna verzija')">Izaberi standardnu verziju</button>
+        </div>
+
+        <!-- Stalak Verzija -->
+        <div class="price-card-item">
+          <h3 class="price-card-title">Stalak verzija</h3>
+          <p class="price-card-desc">Luksuzni viši stalak sa ugrađenom NFC karticom, uočljiviji i privlačniji za goste u restoranu.</p>
+          
+          <div class="price-card-img-wrap">
+            <img src="liveslika2.png" alt="Stalak verzija NFC kartice">
+          </div>
+
+          <div class="price-card-amount-box">
+            <div class="price-card-amount">59.99 KM</div>
+            <div class="price-card-per">po kompletu · jednokratno</div>
+          </div>
+
+          <ul class="price-card-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> NFC čip + gratis QR Kod na poleđini</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Izbor svijetle ili tamne varijante</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Besplatno programiranje vašeg Google linka</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Veća kartica sa premium stalkom</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Maksimalna vidljivost na stolu</li>
+          </ul>
+
+          <div class="bulk-discount-note">🎁 Popust na narudžbe od 3+ kartice!</div>
+
+          <button class="btn btn-light" onclick="selectPackage('Stalak verzija')">Izaberi stalak verziju</button>
+        </div>
+
+      </div>
+
+      <!-- Order Form Section -->
+      <div class="order-form-container reveal" id="formaZaNarudzbu">
+        <div style="text-align: center; margin-bottom: 10px;">
+          <span class="eyebrow">Popunite podatke</span>
+          <h3 style="font-size: 24px; color: #fff;">Naručite svoju NFC karticu / stalak</h3>
+          <p style="color: var(--ink-dim); font-size: 14.5px; margin-top: 6px;">Unesite podatke o vašem lokalu, a mi ćemo vas kontaktirati u najkraćem roku.</p>
+        </div>
+
+        <form id="orderForm" action="https://formspree.io/f/mppzlrdl" method="POST">
+          <div class="order-form-grid">
+            
+            <div class="form-group">
+              <label for="naziv_lokala">Naziv ugostiteljskog objekta</label>
+              <input type="text" id="naziv_lokala" name="naziv_lokala" required placeholder="npr. Caffe Bar Ime">
+            </div>
+
+            <div class="form-group">
+              <label for="kontakt">Kontakt telefon / email</label>
+              <input type="text" id="kontakt" name="kontakt" required placeholder="npr. +387 65 123 456">
+            </div>
+
+            <div class="form-group">
+              <label for="dizajnVerzija">Izabrani dizajn</label>
+              <select id="dizajnVerzija" name="dizajn_verzija" required>
+                <option value="" disabled selected>Izaberite dizajn kartice</option>
+                <option value="Svijetla verzija">Svijetla verzija</option>
+                <option value="Tamna verzija">Tamna verzija</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="tipVerzija">Verzija kartice</label>
+              <select id="tipVerzija" name="tip_verzija" required>
+                <option value="" disabled selected>Izaberite verziju kartice</option>
+                <option value="Standardna verzija">Standardna verzija</option>
+                <option value="Stalak verzija">Stalak verzija</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="kolicina">Količina</label>
+              <input type="number" id="kolicina" name="kolicina" min="1" value="1" required>
+              <span style="font-size: 12px; color: var(--accent); margin-top: 2px; font-weight: 500;">Nudimo popust na 3+ količinu.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="logoStatus">Imate li svoj logo?</label>
+              <select id="logoStatus" name="logo_status" required>
+                <option value="Bez logoa">Bez logoa</option>
+                <option value="Da, poslaću kada me kontaktirate na Viber/Email">Da, poslaću kada me kontaktirate na Viber/Email</option>
+              </select>
+            </div>
+
+            <div class="form-group full" style="margin-top: 8px;">
+              <button type="submit" id="submitBtn" class="btn btn-dark" style="padding: 15px; font-size: 15px; width: 100%;">Pošalji narudžbu</button>
+              <p class="form-notice">Kada izvršite narudžbu, kontaktiraćemo vas na Viber/Email u roku od 0-48h.</p>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= FAQ ================= -->
+  <section class="section-soft" id="faq">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Česta pitanja</span>
+        <h2>Sve što trebate znati prije narudžbe.</h2>
+      </div>
+      <div class="faq-list reveal">
+        <div class="faq-item open">
+          <button class="faq-q" onclick="toggleFaq(this)">Da li gost mora imati posebnu aplikaciju? <span class="plus"></span></button>
+          <div class="faq-a"><p>Ne. NFC tehnologija radi kroz čitač ugrađen u svaki moderni iPhone i Android telefon — gost samo prisloni telefon stalku.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Šta ako telefon gosta ne podržava NFC? <span class="plus"></span></button>
+          <div class="faq-a"><p>Svaka kartica ima QR kod na poleđini kao rezervnu opciju — gost jednostavno skenira kod fotoaparatom.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Da li stalak dolazi uz karticu? <span class="plus"></span></button>
+          <div class="faq-a"><p>Da, svaki komplet uključuje karticu i pripadajući stalak spreman za postavljanje na sto ili pult.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Koliko traje isporuka? <span class="plus"></span></button>
+          <div class="faq-a"><p>Standardna isporuka traje 3 do 5 radnih dana od potvrde narudžbe.</p></div>
+        </div>
+      </div>
+
+      <!-- Dugme ispod FAQ sekcije -->
+      <div style="text-align: center; margin-top: 40px;" class="reveal">
+        <a href="#cijena" class="btn btn-dark" style="width: auto;">Naručite karticu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FINAL CTA ================= -->
+  <section class="section-dark final-cta">
+    <div class="container">
+      <span class="eyebrow on-dark">Spremni ste?</span>
+      <h2>Vaša sledeća recenzija<br>je udaljena jedan dodir.</h2>
+      <p>Postavite našu karticu danas i pustite goste da rade ono što bi svakako htjeli — pohvale vas na Google-u.</p>
+      <div class="final-cta-btns">
+        <a href="#cijena" class="btn btn-dark" style="width:auto;">Naručite karticu</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#" class="logo" onclick="switchView('selector'); return false;">
+            <span class="logo-nfc">NFC</span><span class="logo-recenzije">recenzije</span><span class="logo-dot-wrap">.<div class="logo-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M12 19h.01M12 15h.01M10 11.5a3 3 0 014 0M7 8.5a7 7 0 0110 0M4 5.5a11 11 0 0116 0"/>
+              </svg>
+            </div></span>
+          </a>
+          <p>NFC kartice sa stalkom koje pretvaraju zadovoljne goste u vidljive Google recenzije, jednim dodirom.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Proizvod</h5>
+          <a href="#kako-radi">Kako radi</a>
+          <a href="#cijena">Cijene i narudžba</a>
+        </div>
+        <div class="footer-col">
+          <h5>Podrška</h5>
+          <a href="#faq">Česta pitanja</a>
+          <a href="mailto:kontakt@nfcrecenzije.com">Kontakt</a>
+        </div>
+        <div class="footer-col">
+          <h5>Kompanija</h5>
+          <a href="#">O nama</a>
+          <a href="#">Uslovi korištenja</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 nfcrecenzije.com — Sva prava zadržana.</span>
+        <span>Napravljeno za ugostiteljstvo koje zaslužuje pet zvjezdica.</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+
+<!-- ================= VIEW 3: TEST PAGE FOR OTHER PRODUCTS ================= -->
+<div id="view-test" class="app-view" style="display: none;">
+  <div class="container" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: 120px; padding-bottom: 60px;">
+    <div style="background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 48px 36px; max-width: 600px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.4);">
+      <span class="eyebrow" id="testCategoryLabel">TESTNI PRIKAZ</span>
+      <h2 id="testProductTitle" style="font-size: 28px; color: #fff; margin-bottom: 16px;">Dobrodošli</h2>
+      <p style="color: var(--ink-dim); font-size: 15px; line-height: 1.6; margin-bottom: 30px;">Ovo je testna stranica za izabrani proizvod. Uskoro stiže kompletna ponuda i mogućnost naručivanja!</p>
+      <button onclick="switchView('selector')" class="btn btn-dark" style="width: auto; padding: 12px 24px;">← Izaberi drugi proizvod</button>
     </div>
   </div>
-</footer>
+</div>
+
 
 <script>
+  // ---------- view switching helper ----------
+  function switchView(viewName, productTitle = '') {
+    const selectorView = document.getElementById('view-selector');
+    const reviewsView = document.getElementById('view-reviews');
+    const testView = document.getElementById('view-test');
+    
+    selectorView.style.display = 'none';
+    reviewsView.style.display = 'none';
+    testView.style.display = 'none';
+    
+    if (viewName === 'selector') {
+      selectorView.style.display = 'flex';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (viewName === 'reviews') {
+      reviewsView.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (viewName === 'test') {
+      testView.style.display = 'block';
+      const titleEl = document.getElementById('testProductTitle');
+      if (titleEl) titleEl.textContent = 'Dobrodošli na ' + productTitle;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+  window.switchView = switchView;
+
   // ---------- noise canvas animation ----------
   const noiseCanvas = document.getElementById('noiseCanvas');
   const noiseCtx = noiseCanvas.getContext('2d');
@@ -1376,7 +1574,9 @@
   // ---------- header scroll state ----------
   const header = document.getElementById('siteHeader');
   window.addEventListener('scroll', () => {
-    header.classList.toggle('scrolled', window.scrollY > 30);
+    if (header) {
+      header.classList.toggle('scrolled', window.scrollY > 30);
+    }
   }, {passive:true});
 
   // ---------- scroll reveal ----------
@@ -1514,7 +1714,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width: 26px; height: 26px;"><path d="M5 12l5 5L20 7"/></svg>
               </div>
               <h3 style="font-size: 24px; color: #fff; margin-bottom: 12px;">Narudžba uspješno poslata, kontaktiraćemo vas u najkraćem roku.</h3>
-              <p style="color: var(--accent); font-size: 16px; font-weight: 600; margin-top: 16px;">-NFCrecenzije.</p>
+              <p style="color: var(--accent); font-size: 16px; font-weight: 600; margin-top: 16px;">-NFC-recenzije.</p>
             </div>
           `;
         } else {
@@ -1528,14 +1728,13 @@
           submitBtn.disabled = false;
         }
       } catch (error) {
-        // Fallback in case of strict network block, still show success so user isn't stuck
         container.innerHTML = `
           <div style="text-align: center; padding: 40px 20px;">
             <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--g-green); color: #fff; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 0 20px rgba(52,168,83,0.5);">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width: 26px; height: 26px;"><path d="M5 12l5 5L20 7"/></svg>
             </div>
             <h3 style="font-size: 24px; color: #fff; margin-bottom: 12px;">Narudžba uspješno poslata, kontaktiraćemo vas u najkraćem roku.</h3>
-            <p style="color: var(--accent); font-size: 16px; font-weight: 600; margin-top: 16px;">-NFCrecenzije.</p>
+            <p style="color: var(--accent); font-size: 16px; font-weight: 600; margin-top: 16px;">-NFC-recenzije.</p>
           </div>
         `;
       }
