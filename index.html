@@ -912,7 +912,7 @@
     <div class="product-sel-grid" style="width: 100%;">
       
       <!-- Card 1: ⭐Google Recenzije kartice -->
-      <a href="#recenzije-kartica" class="product-sel-card featured-sel-card" onclick="switchView('reviews'); return false;">
+      <div class="product-sel-card featured-sel-card" onclick="switchView('reviews')">
         <div class="popular-bubble">Popularno 🔥</div>
         <h3>⭐Google Recenzije kartice</h3>
         <p>Kartica i stalak koji otvaraju vašu Google recenziju čim gost prisloni telefon. Bez čekanja i komplikacija.</p>
@@ -920,37 +920,37 @@
           <img src="landing1.jpg" alt="Google reviews kartice">
         </div>
         <span class="product-sel-action">Izaberi Google reviews kartice →</span>
-      </a>
+      </div>
 
       <!-- Card 2: 🍴Meni NFC kartice -->
-      <a href="#meni-kartica" class="product-sel-card" onclick="switchView('test', 'Meni NFC kartica'); return false;">
+      <div class="product-sel-card" onclick="switchView('test', 'Meni NFC kartica')">
         <h3>🍴Meni NFC kartice</h3>
         <p>Omogućite gostima brz i jednostavan pristup vašem digitalnom jelovniku jednim dodirom. Uštedite na štampanju.</p>
         <div class="product-sel-img-box">
           <img src="landing2.jpg" alt="Meni NFC kartica">
         </div>
         <span class="product-sel-action">Izaberi meni NFC karticu →</span>
-      </a>
+      </div>
 
       <!-- Card 3: ᯤWi-Fi + Društvene mreže kartica -->
-      <a href="#wi-fi-plus-drustvenemreze-kartica" class="product-sel-card" onclick="switchView('test', 'Wi-Fi plus društvene mreže kartica'); return false;">
+      <div class="product-sel-card" onclick="switchView('test', 'Wi-Fi plus društvene mreže kartica')">
         <h3>ᯤWi-Fi + Društvene mreže kartica</h3>
         <p>Automatski spojite goste na vašu Wi-Fi mrežu ili im omogućite da odmah zaprate vaše profile na društvenim mrežama.</p>
         <div class="product-sel-img-box">
           <img src="landing3.jpg" alt="Wi-Fi i Društvene mreže NFC kartica">
         </div>
         <span class="product-sel-action">Izaberi Wi-Fi & mreže →</span>
-      </a>
+      </div>
 
       <!-- Card 4: 💎All-In-One kartica -->
-      <a href="#all-in-one-kartica" class="product-sel-card" onclick="switchView('test', 'All-In-One kartica'); return false;">
+      <div class="product-sel-card" onclick="switchView('test', 'All-In-One kartica')">
         <h3 class="animated-gold-title">💎All-In-One kartica</h3>
         <p>Kombinujte recenzije, jelovnik, Wi-Fi i društvene mreže na jednoj pametnoj kartici za vaš ugostiteljski objekat.</p>
         <div class="product-sel-img-box">
           <img src="landing4.jpg" alt="All-In-One NFC kartica">
         </div>
         <span class="product-sel-action">Izaberi All-In-One karticu →</span>
-      </a>
+      </div>
 
     </div>
   </div>
@@ -1514,8 +1514,8 @@
 
 
 <script>
-  // ---------- view switching helper ----------
-  function switchView(viewName, productTitle = '') {
+  // ---------- view switching helper with HTML5 History API (pushState) ----------
+  function switchView(viewName, productTitle = '', pushHistory = true) {
     const selectorView = document.getElementById('view-selector');
     const reviewsView = document.getElementById('view-reviews');
     const testView = document.getElementById('view-test');
@@ -1527,17 +1527,43 @@
     if (viewName === 'selector') {
       selectorView.style.display = 'flex';
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (pushHistory) {
+        history.pushState({ view: 'selector' }, '', window.location.pathname);
+      }
     } else if (viewName === 'reviews') {
       reviewsView.style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (pushHistory) {
+        history.pushState({ view: 'reviews' }, '', '#reviews');
+      }
     } else if (viewName === 'test') {
       testView.style.display = 'block';
       const titleEl = document.getElementById('testProductTitle');
       if (titleEl) titleEl.textContent = 'Dobrodošli na ' + productTitle;
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (pushHistory) {
+        const slug = productTitle ? productTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'proizvod';
+        history.pushState({ view: 'test', productTitle: productTitle }, '', '#' + slug);
+      }
     }
   }
   window.switchView = switchView;
+
+  // Handle browser back/forward navigation using popstate[cite: 11]
+  window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.view) {
+      switchView(event.state.view, event.state.productTitle || '', false);
+    } else {
+      switchView('selector', '', false);
+    }
+  });
+
+  // Ensure initial page load has a state recorded
+  window.addEventListener('load', () => {
+    if (!history.state) {
+      history.replaceState({ view: 'selector' }, '', window.location.pathname);
+    }
+  });
 
   // ---------- noise canvas animation ----------
   const noiseCanvas = document.getElementById('noiseCanvas');
